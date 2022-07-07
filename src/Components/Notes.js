@@ -1,11 +1,9 @@
 import React from 'react';
 import Note from './Note';
-import NoteCreator from './NoteCreator';
 import NoteEditor from './NoteEditor';
 
 const Notes = () => {
-  const [creator, setCreator] = React.useState(false);
-  const [editor, setEditor] = React.useState(false);
+  const [noteEditor, setNoteEditor] = React.useState(false);
   const [notes, setNotes] = React.useState([]);
   const [noteID, setNoteID] = React.useState();
 
@@ -21,17 +19,13 @@ const Notes = () => {
     }
   }, [notes]);
 
-  if (creator)
-    return (
-      <NoteCreator setCreator={setCreator} notes={notes} setNotes={setNotes} />
-    );
-  if (editor)
+  if (noteEditor)
     return (
       <NoteEditor
-        setEditor={setEditor}
         notes={notes}
         setNotes={setNotes}
         noteID={noteID}
+        setNoteEditor={setNoteEditor}
       />
     );
   else
@@ -48,13 +42,20 @@ const Notes = () => {
                 key={note.id}
                 note={note}
                 setNoteID={setNoteID}
-                setEditor={setEditor}
+                setNoteEditor={setNoteEditor}
               />
             ))
           ) : (
             <p>Create your first note</p>
           )}
-          <div onClick={() => setCreator(true)}>New</div>
+          <div
+            onClick={() => {
+              setNoteEditor(true);
+              setNoteID(0);
+            }}
+          >
+            New
+          </div>
         </section>
       </>
     );

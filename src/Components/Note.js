@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Note = ({ note, setEditor, setNoteID }) => {
+const Note = ({ note, setNoteEditor, setNoteID }) => {
   function handleClick(e) {
-    setNoteID(e.currentTarget.dataset.id);
-    setEditor(true);
+    setNoteID(Number(e.currentTarget.dataset.id));
+    setNoteEditor(true);
   }
 
   return (
