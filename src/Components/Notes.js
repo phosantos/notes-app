@@ -1,17 +1,16 @@
 import React from 'react';
 import Note from './Note';
 import NoteEditor from './NoteEditor';
+import { ReactComponent as New } from '../Assets/plus.svg';
+import styles from './Notes.module.css';
 
 const Notes = () => {
+  const [notes, setNotes] = React.useState(() => {
+    const localNotes = JSON.parse(window.localStorage.getItem('notes'));
+    return localNotes ? localNotes : [];
+  });
   const [noteEditor, setNoteEditor] = React.useState(false);
-  const [notes, setNotes] = React.useState([]);
   const [noteID, setNoteID] = React.useState();
-
-  React.useEffect(() => {
-    if (window.localStorage.getItem('notes')) {
-      setNotes(JSON.parse(window.localStorage.getItem('notes')));
-    }
-  }, []);
 
   React.useEffect(() => {
     if (notes.length > 0) {
@@ -31,31 +30,39 @@ const Notes = () => {
   else
     return (
       <>
-        <header>
-          <h1>Notes</h1>
-          <input type="text" placeholder="find your notes" />
-        </header>
-        <section>
-          {notes ? (
-            notes.map((note) => (
-              <Note
-                key={note.id}
-                note={note}
-                setNoteID={setNoteID}
-                setNoteEditor={setNoteEditor}
-              />
-            ))
-          ) : (
-            <p>Create your first note</p>
-          )}
+        <header className="header">
+          <h1 className={styles.title}>Notes</h1>
           <div
+            className="btn"
             onClick={() => {
               setNoteEditor(true);
               setNoteID(0);
             }}
           >
-            New
+            <New />
+            New note
           </div>
+        </header>
+        <section className={styles.notes}>
+          {notes.length > 0 ? (
+            notes
+              .sort((a, b) => {
+                const dateA = new Date(a.lastUpdate);
+                const dateB = new Date(b.lastUpdate);
+                if (dateA < dateB) return 1;
+                else return -1;
+              })
+              .map((note) => (
+                <Note
+                  key={note.id}
+                  note={note}
+                  setNoteID={setNoteID}
+                  setNoteEditor={setNoteEditor}
+                />
+              ))
+          ) : (
+            <p className={styles.firstNote}>Create your first note</p>
+          )}
         </section>
       </>
     );

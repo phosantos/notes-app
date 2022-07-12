@@ -1,0 +1,27 @@
+.note {
+  background: var(--item);
+  cursor: pointer;
+  font-family: 'Nunito Sans', sans-serif;
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.note:hover {
+  background-color: var(--hover);
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.body {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.lastUpdateDate {
+  font-size: 0.75rem;
+  opacity: 60%;
+}
