@@ -30,3 +30,22 @@
   font-weight: 600;
   resize: none;
 }
+
+.noteOptions {
+  display: flex;
+  gap: 1rem;
+}
+
+.deleteBtn {
+  background: var(--red);
+}
+
+.deleteBtn:hover {
+  background: var(--red-2);
+}
+
+@media (max-width:500px) {
+  .title {
+    display: none;
+  }
+}

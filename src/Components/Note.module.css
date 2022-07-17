@@ -14,14 +14,29 @@
 .title {
   font-size: 1.125rem;
   font-weight: 800;
+  width: 20ch;
 }
 
 .body {
   font-size: 0.875rem;
   font-weight: 600;
+  line-break: anywhere;
 }
 
 .lastUpdateDate {
+  display: block;
   font-size: 0.75rem;
   opacity: 60%;
+  margin-bottom: .5rem;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 1rem;
+  }
+
+  .body {
+    font-size: 0.8125;
+  }
+
 }

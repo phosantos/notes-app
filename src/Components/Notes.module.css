@@ -9,6 +9,12 @@
   gap: 20px;
 }
 
+@media(max-width: 550px) {
+  .notes {
+    grid-template-columns: 1fr;
+  }
+}
+
 .firstNote {
   height: 60vh;
   display: flex;

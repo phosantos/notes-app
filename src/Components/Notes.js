@@ -5,26 +5,24 @@ import { ReactComponent as New } from '../Assets/plus.svg';
 import styles from './Notes.module.css';
 
 const Notes = () => {
-  const [notes, setNotes] = React.useState(() => {
-    const localNotes = JSON.parse(window.localStorage.getItem('notes'));
-    return localNotes ? localNotes : [];
-  });
   const [noteEditor, setNoteEditor] = React.useState(false);
-  const [noteID, setNoteID] = React.useState();
+  const [notes, setNotes] = React.useState([]);
+  const [selectedNoteID, setSelectedNoteID] = React.useState(0);
 
   React.useEffect(() => {
-    if (notes.length > 0) {
-      window.localStorage.setItem('notes', JSON.stringify(notes));
-    }
-  }, [notes]);
+    setNotes(() => {
+      const localNotes = JSON.parse(window.localStorage.getItem('notes'));
+      return localNotes ? localNotes : [];
+    });
+  }, [noteEditor]);
 
   if (noteEditor)
     return (
       <NoteEditor
         notes={notes}
         setNotes={setNotes}
-        noteID={noteID}
         setNoteEditor={setNoteEditor}
+        selectedNoteID={selectedNoteID}
       />
     );
   else
@@ -36,7 +34,7 @@ const Notes = () => {
             className="btn"
             onClick={() => {
               setNoteEditor(true);
-              setNoteID(0);
+              setSelectedNoteID(null);
             }}
           >
             <New />
@@ -56,7 +54,7 @@ const Notes = () => {
                 <Note
                   key={note.id}
                   note={note}
-                  setNoteID={setNoteID}
+                  setSelectedNoteID={setSelectedNoteID}
                   setNoteEditor={setNoteEditor}
                 />
               ))

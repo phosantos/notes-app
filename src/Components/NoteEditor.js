@@ -1,72 +1,60 @@
 import React from 'react';
 import { ReactComponent as Close } from '../Assets/return.svg';
 import { ReactComponent as Save } from '../Assets/check.svg';
+import { ReactComponent as Delete } from '../Assets/trash.svg';
+import { createNote, updateNote, deleteNote, setNewNoteID } from '../NotesAPI';
 import styles from './NoteEditor.module.css';
 
-const NoteEditor = ({ notes, setNotes, noteID, setNoteEditor }) => {
-  const [note, setNote] = React.useState(
-    noteID ? notes.filter((note) => note.id === noteID)[0] : null,
-  );
+const NoteEditor = ({ notes, setNoteEditor, selectedNoteID }) => {
+  const [note, setNote] = React.useState(() => {
+    const selectedNote = notes.filter((note) => note.id === selectedNoteID)[0];
+    return selectedNote ? selectedNote : null;
+  });
   const [title, setTitle] = React.useState(note ? note.title : '');
-  const [content, setContent] = React.useState(note ? note.content : '');
+  const [body, setBody] = React.useState(note ? note.body : '');
   const [saveStatus, setSaveStatus] = React.useState(false);
-  const textarea = React.useRef();
-
-  //data
-  //deletar nota
-  // deletar todas as notas
-  //escolher cor
-  //formatar inputs
+  const bodyArea = React.useRef();
 
   React.useEffect(() => {
-    textarea.current.style.height = textarea.current.scrollHeight + 'px';
-  }, [note]);
+    bodyArea.current.style.height = bodyArea.current.scrollHeight + 'px';
+  }, []);
 
-  // function getLastUpdateDate() {
-  //   const d = new Date();
-  //   return d.toLocaleString('en-us', {
-  //     dateStyle: 'medium',
-  //     timeStyle: 'short',
-  //   });
-  // }
-
-  function onSaveNote() {
-    setNote({
-      id: noteID ? noteID : notes.length + 1,
-      lastUpdate: new Date().toString(),
-      title,
-      content,
-    });
-    setSaveStatus(true);
-  }
-
-  function storeNote() {
-    if (noteID) {
-      setNotes((notes) => [
-        ...notes.filter((note) => note.id !== noteID),
-        note,
-      ]);
-    } else {
-      setNotes((notes) => [...notes, note]);
-    }
-    window.localStorage.setItem('notes', JSON.stringify(notes));
+  function autosize({ target }) {
+    target.style.height = target.scrollHeight + 'px';
   }
 
   function onCloseNote() {
-    if (content) {
-      if (saveStatus) {
-        storeNote();
-        setNoteEditor(false);
-      } else {
-        if (window.confirm('Close without saving?')) setNoteEditor(false);
-      }
+    if (!saveStatus && body) {
+      if (window.confirm('Close without saving?')) setNoteEditor(false);
     } else {
       setNoteEditor(false);
     }
   }
 
-  function autosize({ target }) {
-    target.style.height = target.scrollHeight + 'px';
+  function onSaveNote() {
+    if (body) {
+      const newNote = {
+        id: note ? note.id : setNewNoteID(),
+        lastUpdate: new Date().toString(),
+        title,
+        body,
+      };
+      setNote(newNote);
+      if (note) updateNote(newNote);
+      else createNote(newNote);
+      setSaveStatus(true);
+    }
+  }
+
+  function onDeleteNote() {
+    if (note) {
+      if (
+        window.confirm('Delete note? This note will be permanently deleted.')
+      ) {
+        deleteNote(note.id);
+        setNoteEditor(false);
+      }
+    }
   }
 
   return (
@@ -82,8 +70,13 @@ const NoteEditor = ({ notes, setNotes, noteID, setNoteEditor }) => {
               : title
             : 'Untitled'}
         </h1>
-        <div className="btn" onClick={onSaveNote}>
-          <Save />
+        <div className={styles.noteOptions}>
+          <div className="btn" onClick={onSaveNote}>
+            <Save />
+          </div>
+          <div className={`${styles.deleteBtn} btn`} onClick={onDeleteNote}>
+            <Delete />
+          </div>
         </div>
       </header>
 
@@ -98,11 +91,11 @@ const NoteEditor = ({ notes, setNotes, noteID, setNoteEditor }) => {
         <textarea
           className={styles.bodyInput}
           placeholder="Content"
-          value={content}
-          onChange={({ target }) => setContent(target.value)}
+          value={body}
+          onChange={({ target }) => setBody(target.value)}
           onKeyDown={autosize}
           onKeyUp={autosize}
-          ref={textarea}
+          ref={bodyArea}
         ></textarea>
       </section>
     </>
