@@ -21,7 +21,7 @@ export function deleteNote(deletedNoteID) {
 
 export function setNewNoteID() {
   const notes = JSON.parse(window.localStorage.getItem('notes'));
-  if (notes) {
+  if (notes && notes.length) {
     return (
       notes.map((note) => note.id).sort((a, b) => (a.id < b.id ? 1 : -1))[0] + 1
     );
